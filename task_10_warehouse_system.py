@@ -1,4 +1,5 @@
 # Задача 10. Система учёта строительного склада
+# Автор: Аксёнов Александр Александрович, группа з3140801/52501
 
 warehouse = {
     "Кирпич": {"quantity": 5000, "price": 12.50, "min_quantity": 1000},
@@ -8,63 +9,49 @@ warehouse = {
     "Бетон": {"quantity": 45, "price": 4200.00, "min_quantity": 15},
 }
 
-# Выводим таблицу и одновременно считаем общую стоимость запасов.
-total_value = 0
-critical_items = []
+
+def print_warehouse(items):
+    """Печатает табличное представление складских запасов."""
+    print("Материал       | Кол-во | Цена       | Мин. | Стоимость")
+    print("-" * 65)
+    for name, data in items.items():
+        warning = " ⚠ КРИТИЧНО!" if data["quantity"] < data["min_quantity"] else ""
+        cost = data["quantity"] * data["price"]
+        print(
+            f"{name:<14} | {data['quantity']:>6} | {data['price']:>10.2f} | "
+            f"{data['min_quantity']:>4} | {cost:>12.2f}{warning}"
+        )
+
 
 print("=== СИСТЕМА УЧЁТА СКЛАДА ===")
-print()
-print(f"{'Материал':<12} | {'Кол-во':>7} | {'Цена':>10} | {'Мин.':>6} | {'Стоимость':>12}")
-print("-" * 65)
+print_warehouse(warehouse)
 
-for name, data in warehouse.items():
-    quantity = data["quantity"]
-    price = data["price"]
-    minimum = data["min_quantity"]
-    value = quantity * price
-    total_value += value
+total_value = sum(item["quantity"] * item["price"] for item in warehouse.values())
+most_expensive = max(warehouse.items(), key=lambda pair: pair[1]["price"])
+critical = [
+    (name, data["quantity"], data["min_quantity"])
+    for name, data in warehouse.items()
+    if data["quantity"] < data["min_quantity"]
+]
 
-    warning = " ⚠ КРИТИЧНО!" if quantity < minimum else ""
-    if quantity < minimum:
-        critical_items.append((name, quantity, minimum))
-
-    print(
-        f"{name:<12} | {quantity:>7} | {price:>10.2f} | "
-        f"{minimum:>6} | {value:>12.2f}{warning}"
-    )
-
-# Находим материал с наибольшей стоимостью складского запаса.
-most_expensive = max(
-    warehouse.items(),
-    key=lambda item: item[1]["quantity"] * item[1]["price"]
-)
-most_expensive_value = most_expensive[1]["quantity"] * most_expensive[1]["price"]
-
-print("-" * 65)
-print(f"Общая стоимость: {total_value:.2f} руб.")
-print(
-    f"Самый дорогой запас: {most_expensive[0]} "
-    f"({most_expensive_value:.2f} руб.)"
-)
-
-print()
-print(f"⚠ КРИТИЧЕСКИЕ ОСТАТКИ ({len(critical_items)}):")
-if critical_items:
-    for name, quantity, minimum in critical_items:
+print("=" * 65)
+print(f"Общая стоимость склада: {total_value:.2f} руб.")
+print(f"Самый дорогой материал по цене за единицу: {most_expensive[0]} "
+      f"({most_expensive[1]['price']:.2f} руб.)")
+print(f"Критические остатки ({len(critical)}):")
+if critical:
+    for name, quantity, minimum in critical:
         print(f"- {name}: {quantity} < {minimum}")
 else:
-    print("- Нет")
+    print("- нет")
 
-# Моделируем выдачу 25 единиц цемента со склада.
+# Демонстрируем выдачу 25 единиц цемента и обновляем остаток.
 material_to_issue = "Цемент"
 issue_quantity = 25
-
-print()
-print("=== ВЫДАЧА МАТЕРИАЛА ===")
+print("=== ВЫДАЧА МАТЕРИАЛА СО СКЛАДА ===")
 if material_to_issue in warehouse and warehouse[material_to_issue]["quantity"] >= issue_quantity:
     warehouse[material_to_issue]["quantity"] -= issue_quantity
-    remaining = warehouse[material_to_issue]["quantity"]
-    print(f"✓ Выдано {issue_quantity} ед. материала «{material_to_issue}».")
-    print(f"Остаток: {remaining}")
+    print(f"✓ Выдано {issue_quantity} единиц материала «{material_to_issue}».")
+    print(f"Остаток: {warehouse[material_to_issue]['quantity']}")
 else:
-    print("Ошибка: материал отсутствует или недостаточно остатка.")
+    print("Ошибка: материала недостаточно или он отсутствует на складе.")

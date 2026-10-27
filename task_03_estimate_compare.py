@@ -1,18 +1,23 @@
 # Задача 3. Конвертер температуры
-# Переводим температуру из градусов Цельсия в Фаренгейты
-# и определяем состояние воды при указанной температуре.
+# Автор: Аксёнов Александр Александрович, группа з3140801/52501
 
-temperature_c = 20.0
-temperature_f = temperature_c * 9 / 5 + 32
-
-if temperature_c < 0:
-    water_state = "Лёд"
-elif temperature_c < 100:
-    water_state = "Жидкость"
+# Введите температуру в градусах Цельсия.
+try:
+    celsius = float(input("Введите температуру, °C: ").replace(",", "."))
+except ValueError:
+    print("Ошибка: введите число, например 18 или 18.5.")
 else:
-    water_state = "Пар"
+    fahrenheit = celsius * 9 / 5 + 32
 
-print("=== КОНВЕРТЕР ТЕМПЕРАТУРЫ ===")
-print(f"Температура: {temperature_c:.1f} °C")
-print(f"По Фаренгейту: {temperature_f:.1f} °F")
-print(f"Состояние воды: {water_state}")
+    # Состояние воды определяем по температурным границам из задания.
+    if celsius < 0:
+        state = "Лёд"
+    elif celsius < 100:
+        state = "Жидкость"
+    else:
+        state = "Пар"
+
+    print("=== КОНВЕРТЕР ТЕМПЕРАТУРЫ ===")
+    print(f"Температура: {celsius:.2f} °C")
+    print(f"По Фаренгейту: {fahrenheit:.2f} °F")
+    print(f"Состояние воды: {state}")
