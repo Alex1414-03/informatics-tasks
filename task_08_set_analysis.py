@@ -22,3 +22,4 @@ print(f"Все уникальные материалы ({len(all_unique)}): {', 
 print(f"Общие для всех: {', '.join(sorted(common_all)) or 'нет'}")
 print(f"Только у первого подрядчика: {', '.join(sorted(only_first)) or 'нет'}")
 print(f"Ровно у двух подрядчиков: {', '.join(sorted(exactly_two)) or 'нет'}")
+
